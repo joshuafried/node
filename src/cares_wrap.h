@@ -23,7 +23,15 @@
 # include <netdb.h>
 #endif  // __POSIX__
 
-# include <ares_nameser.h>
+#if defined(__ANDROID__) || \
+    defined(__MINGW32__) || \
+    defined(__OpenBSD__) || \
+    defined(_MSC_VER)
+# include <nameser.h>
+#else
+# include <arpa/nameser.h>
+#endif
+
 
 namespace node {
 namespace cares_wrap {
