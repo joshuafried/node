@@ -60,7 +60,9 @@ icu_versions = json.loads((tools_path / 'icu' / 'icu_versions.json').read_text(e
 
 shareable_builtins = {'cjs_module_lexer/lexer': 'deps/cjs-module-lexer/lexer.js',
                      'cjs_module_lexer/dist/lexer': 'deps/cjs-module-lexer/dist/lexer.js',
-                     'undici/undici': 'deps/undici/undici.js'
+                     'undici/undici': 'deps/undici/undici.js',
+                     'acorn': 'deps/acorn/acorn/dist/acorn.js',
+                     'acorn_walk': 'deps/acorn/acorn-walk/dist/walk.js'
 }
 
 # create option groups

@@ -52,6 +52,19 @@ BuiltinLoader::BuiltinLoader()
   AddExternalizedBuiltin("internal/deps/undici/undici",
                          STRINGIFY(NODE_SHARED_BUILTIN_UNDICI_UNDICI_PATH));
 #endif  // NODE_SHARED_BUILTIN_UNDICI_UNDICI_PATH
+
+#ifdef NODE_SHARED_BUILTIN_ACORN_PATH
+  AddExternalizedBuiltin(
+    "internal/deps/acorn/acorn/dist/acorn",
+    STRINGIFY(NODE_SHARED_BUILTIN_ACORN_PATH));
+#endif  // NODE_SHARED_BUILTIN_ACORN_PATH
+
+#ifdef NODE_SHARED_BUILTIN_ACORN_WALK_PATH
+  AddExternalizedBuiltin(
+    "internal/deps/acorn/acorn-walk/dist/walk",
+    STRINGIFY(NODE_SHARED_BUILTIN_ACORN_WALK_PATH));
+#endif  // NODE_SHARED_BUILTIN_ACORN_WALK_PATH
+
 }
 
 bool BuiltinLoader::Exists(const char* id) {
