@@ -934,25 +934,7 @@ class Context(object):
     self.node_has_crypto = True
 
   def GetVm(self, arch, mode):
-    if self.vm is not None:
-      return self.vm
-    if arch == 'none':
-      name = 'out/Debug/node' if mode == 'debug' else 'out/Release/node'
-    else:
-      name = 'out/%s.%s/node' % (arch, mode)
-
-    # Currently GYP does not support output_dir for MSVS.
-    # http://code.google.com/p/gyp/issues/detail?id=40
-    # It will put the builds into Release/node.exe or Debug/node.exe
-    if utils.IsWindows():
-      if not exists(name + '.exe'):
-        name = name.replace('out/', '')
-      name = os.path.abspath(name + '.exe')
-
-    if not exists(name):
-      raise ValueError('Could not find executable. Should be ' + name)
-
-    return name
+    return './node'
 
   def GetTimeout(self, mode, section=''):
     timeout = self.timeout * TIMEOUT_SCALEFACTOR[ARCH_GUESS or 'ia32'][mode]

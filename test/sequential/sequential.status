@@ -11,6 +11,24 @@ test-cpu-prof-dir-worker: PASS, FLAKY
 test-watch-mode: PASS, FLAKY
 test-watch-mode-inspect: PASS, FLAKY
 
+# flaky or failing at least on debian build servers
+test-fs-watch                                   : PASS,FLAKY
+test-force-repl                                 : SKIP
+test-performance                                : SKIP
+test-http2-session-timeout                      : PASS,FLAKY
+test-debugger-preserve-breaks                   : PASS,FLAKY
+test-debugger-exec-scope                        : PASS,FLAKY
+
+# https://github.com/nodejs/node/issues/24403
+test-cli-syntax: PASS,FLAKY
+
+# for debian buildd i386 (but pass on porter barriere.d.o)
+test-debugger-heap-profiler: PASS,FLAKY
+
+# new test - failing/hanging https://github.com/nodejs/node/issues/44898
+test-watch-mode: SKIP
+test-watch-mode-inspect: SKIP
+
 [$system==win32]
 # https://github.com/nodejs/node/issues/47116
 test-http-max-sockets: PASS, FLAKY

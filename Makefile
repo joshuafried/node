@@ -540,7 +540,7 @@ test-ci-native: | benchmark/napi/.buildstamp test/addons/.buildstamp test/js-nat
 # This target should not use a native compiler at all
 # Related CI job: node-test-commit-arm-fanned
 test-ci-js: | clear-stalled
-	$(PYTHON) tools/test.py $(PARALLEL_ARGS) -p tap --logfile test.tap \
+	$(PYTHON) tools/test.py $(PARALLEL_ARGS) -p tap \
 		--mode=$(BUILDTYPE_LOWER) --flaky-tests=$(FLAKY_TESTS) \
 		$(TEST_CI_ARGS) $(CI_JS_SUITES)
 	$(info Clean up any leftover processes, error if found.)

@@ -259,16 +259,15 @@ const pwdCommand = isWindows ?
 
 function platformTimeout(ms) {
   const multipliers = typeof ms === 'bigint' ?
-    { two: 2n, four: 4n, seven: 7n } : { two: 2, four: 4, seven: 7 };
+    { fast: 2n, slow: 4n } : { fast: 3, slow: 5 };
+ 
+  if (process.arch.startsWith('arm') || process.arch.startsWith('mips') || process.arch.startsWith('riscv'))
+    ms = multipliers.slow * ms;
+  else
+    ms = multipliers.fast * ms;
 
   if (process.features.debug)
-    ms = multipliers.two * ms;
-
-  if (exports.isAIX || exports.isIBMi)
-    return multipliers.two * ms; // Default localhost speed is slower on AIX
-
-  if (isPi)
-    return multipliers.two * ms;  // Raspberry Pi devices
+    ms = multipliers.slow * ms;
 
   return ms;
 }
