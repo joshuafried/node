@@ -71,12 +71,12 @@ if (process.argv[2] === 'child') {
   env.HOME = env.USERPROFILE = bothHomeDir;
   runTest('$HOME/.node_modules', env);
 
-  // Test module in $PREFIX/lib/node.
-  // Write module into $PREFIX/lib/node.
-  const expectedString = '$PREFIX/lib/node';
-  const prefixLibPath = path.join(prefixPath, 'lib');
+  // Test module in $PREFIX/share/node.
+  // Write module into $PREFIX/share/node.
+  const expectedString = '$PREFIX/share/nodejs';
+  const prefixLibPath = path.join(prefixPath, 'share');
   fs.mkdirSync(prefixLibPath);
-  const prefixLibNodePath = path.join(prefixLibPath, 'node');
+  const prefixLibNodePath = path.join(prefixLibPath, 'nodejs');
   fs.mkdirSync(prefixLibNodePath);
   const pkgPath = path.join(prefixLibNodePath, `${pkgName}.js`);
   fs.writeFileSync(pkgPath, `exports.string = '${expectedString}';`);

@@ -96,6 +96,12 @@ parser.add_argument('--coverage',
     default=None,
     help='Build node with code coverage enabled')
 
+parser.add_argument('--arch-triplet',
+    action='store',
+    dest='arch_triplet',
+    default=None,
+    help='arch triplet used by distro')
+
 parser.add_argument('--debug',
     action='store_true',
     dest='debug',
@@ -142,6 +148,13 @@ parser.add_argument('--gdb',
     dest='gdb',
     default=None,
     help='add gdb support')
+
+parser.add_argument('--node-relative-path',
+    action='store',
+    dest='node_relative_path',
+    default=None,
+    help='Node path(s) used by require, resolved relative to prefix dir.')
+
 
 parser.add_argument('--no-ifaddrs',
     action='store_true',
@@ -1490,6 +1503,17 @@ def configure_napi(output):
   version = getnapibuildversion.get_napi_version()
   output['variables']['napi_build_version'] = version
 
+def configure_debian(output):
+  if options.arch_triplet:
+    output['variables']['arch_triplet'] = options.arch_triplet
+  else:
+    output['variables']['arch_triplet'] = 'unknown-unknown-unknown'
+
+  if options.node_relative_path:
+    output['variables']['node_relative_path'] = options.node_relative_path
+  else:
+    output['variables']['node_relative_path']= ''
+
 def configure_library(lib, output, pkgname=None):
   shared_lib = 'shared_' + lib
   output['variables']['node_' + shared_lib] = b(getattr(options, shared_lib))
@@ -2069,6 +2093,7 @@ flavor = GetFlavor(flavor_params)
 configure_node(output)
 configure_node_lib_files(output)
 configure_napi(output)
+configure_debian(output)
 configure_library('zlib', output)
 configure_library('http_parser', output)
 configure_library('libuv', output)
