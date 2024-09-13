@@ -185,8 +185,12 @@ config.gypi: configure configure.py src/node_version.h
 		exit 1; \
 	fi
 
+build:
+	$(MAKE) $(PARALLEL_ARGS) -C out $(NODE_EXE) BUILDTYPE=$(BUILDTYPE) V=$(V)
+	ln -sf out/$(BUILDTYPE)/node .
+
 .PHONY: install
-install: all ## Installs node into $PREFIX (default=/usr/local).
+install: ## Installs node into $PREFIX (default=/usr/local).
 	$(PYTHON) tools/install.py $@ '$(DESTDIR)' '$(PREFIX)'
 
 .PHONY: uninstall
