@@ -765,7 +765,6 @@
         'run_torque',
         'v8_internal_headers',
         'v8_maybe_icu',
-        'v8_zlib',
       ],
       'includes': ['inspector.gypi'],
       'direct_dependent_settings': {

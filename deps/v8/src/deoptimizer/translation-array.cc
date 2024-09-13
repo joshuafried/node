@@ -7,13 +7,17 @@
 #include "src/base/vlq.h"
 #include "src/deoptimizer/translated-state.h"
 #include "src/objects/fixed-array-inl.h"
+
+#ifdef V8_USE_ZLIB
 #include "third_party/zlib/google/compression_utils_portable.h"
+#endif  // V8_USE_ZLIB
 
 namespace v8 {
 namespace internal {
 
 namespace {
 
+#ifdef V8_USE_ZLIB
 // Constants describing compressed TranslationArray layout. Only relevant if
 // --turbo-compress-translation-arrays is enabled.
 constexpr int kUncompressedSizeOffset = 0;
@@ -21,12 +25,14 @@ constexpr int kUncompressedSizeSize = kInt32Size;
 constexpr int kCompressedDataOffset =
     kUncompressedSizeOffset + kUncompressedSizeSize;
 constexpr int kTranslationArrayElementSize = kInt32Size;
+#endif  // V8_USE_ZLIB
 
 }  // namespace
 
 TranslationArrayIterator::TranslationArrayIterator(TranslationArray buffer,
                                                    int index)
     : buffer_(buffer), index_(index) {
+#ifdef V8_USE_ZLIB
   if (V8_UNLIKELY(FLAG_turbo_compress_translation_arrays)) {
     const int size = buffer_.get_int(kUncompressedSizeOffset);
     uncompressed_contents_.insert(uncompressed_contents_.begin(), size, 0);
@@ -41,9 +47,10 @@ TranslationArrayIterator::TranslationArrayIterator(TranslationArray buffer,
             buffer_.DataSize()),
         Z_OK);
     DCHECK(index >= 0 && index < size);
-  } else {
-    DCHECK(index >= 0 && index < buffer.length());
+	return;
   }
+#endif  // V8_USE_ZLIB
+  DCHECK(index >= 0 && index < buffer.length());
 }
 
 int32_t TranslationArrayIterator::Next() {
@@ -74,6 +81,7 @@ void TranslationArrayBuilder::Add(int32_t value) {
 
 Handle<TranslationArray> TranslationArrayBuilder::ToTranslationArray(
     Factory* factory) {
+#ifdef V8_USE_ZLIB
   if (V8_UNLIKELY(FLAG_turbo_compress_translation_arrays)) {
     const int input_size = SizeInBytes();
     uLongf compressed_data_size = compressBound(input_size);
@@ -97,13 +105,13 @@ Handle<TranslationArray> TranslationArrayBuilder::ToTranslationArray(
                 compressed_data.data(), compressed_data_size);
 
     return result;
-  } else {
-    Handle<TranslationArray> result =
-        factory->NewByteArray(SizeInBytes(), AllocationType::kOld);
-    memcpy(result->GetDataStartAddress(), contents_.data(),
-           contents_.size() * sizeof(uint8_t));
-    return result;
   }
+#endif
+  Handle<TranslationArray> result =
+      factory->NewByteArray(SizeInBytes(), AllocationType::kOld);
+  memcpy(result->GetDataStartAddress(), contents_.data(),
+         contents_.size() * sizeof(uint8_t));
+  return result;
 }
 
 void TranslationArrayBuilder::BeginBuiltinContinuationFrame(

@@ -285,6 +285,10 @@
     # (incomplete and experimental).
     'v8_enable_cet_shadow_stack%': 0,
 
+    # Compile V8 using zlib as dependency.
+    # Sets -DV8_USE_ZLIB
+    'v8_use_zlib%': 0,
+
     # Variables from v8.gni
 
     # Enable ECMAScript Internationalization API. Enabling this feature will
@@ -454,6 +458,9 @@
       }],
       ['v8_enable_cet_shadow_stack==1', {
         'defines': ['V8_ENABLE_CET_SHADOW_STACK',],
+      }],
+      ['v8_use_zlib==1', {
+        'defines': ['V8_USE_ZLIB',],
       }],
       ['v8_enable_precise_zone_stats==1', {
         'defines': ['V8_ENABLE_PRECISE_ZONE_STATS',],
