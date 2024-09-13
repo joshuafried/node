@@ -29,6 +29,10 @@ test-debugger-heap-profiler: PASS,FLAKY
 test-watch-mode: SKIP
 test-watch-mode-inspect: SKIP
 
+# does not work on IPv6 only host
+test-tls-psk-client: PASS,FLAKY
+test-tls-securepair-client: PASS,FLAKY
+
 [$system==win32]
 # https://github.com/nodejs/node/issues/47116
 test-http-max-sockets: PASS, FLAKY
