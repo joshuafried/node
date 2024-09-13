@@ -3,8 +3,8 @@ const common = require('../common');
 const assert = require('assert');
 
 // Import of pure js (non-shared) deps for comparison
-const acorn = require('../../deps/acorn/acorn/package.json');
-const cjs_module_lexer = require('../../deps/cjs-module-lexer/package.json');
+const acorn = require('/usr/share/nodejs/acorn/package.json');
+const cjs_module_lexer = require('/usr/share/nodejs/cjs-module-lexer/package.json');
 
 const expected_keys = [
   'ares',
@@ -98,7 +98,7 @@ assert.strictEqual(process.config.variables.napi_build_version,
                    process.versions.napi);
 
 if (hasUndici) {
-  const undici = require('../../deps/undici/src/package.json');
+  const undici = require('/usr/share/nodejs/undici/package.json');
   const expectedUndiciVersion = undici.version;
   assert.strictEqual(process.versions.undici, expectedUndiciVersion);
 }
