@@ -53,6 +53,12 @@ test-corepack-version: SKIP
 test-fs-utimes: PASS,FLAKY
 test-fs-utimes-y2K38: PASS,FLAKY
 
+# Ubuntu regressed also in release pocket, new wasm issue?
+test-fetch: PASS,FLAKY
+test-http-response-setheaders: PASS,FLAKY
+test-process-versions: PASS,FLAKY
+test-strace-openat-openssl: PASS,FLAKY
+
 [$system==win32]
 # https://github.com/nodejs/node/issues/41206
 test-crypto-keygen: PASS,FLAKY
