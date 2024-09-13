@@ -341,6 +341,9 @@
       'libraries!': [
         '-lrt'
       ],
+      'libraries': [
+        '-latomic'
+      ]
     }],
     [ 'OS in "freebsd linux"', {
       'ldflags': [ '-Wl,-z,relro',
