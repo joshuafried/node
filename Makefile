@@ -635,11 +635,6 @@ test-hash-seed: all
 
 .PHONY: test-doc
 test-doc: doc-only lint-md ## Builds, lints, and verifies the docs.
-	@if [ "$(shell $(node_use_openssl))" != "true" ]; then \
-		echo "Skipping test-doc (no crypto)"; \
-	else \
-		$(PYTHON) tools/test.py $(PARALLEL_ARGS) doctool; \
-	fi
 
 .PHONY: test-doc-ci
 test-doc-ci: doc-only
@@ -762,12 +757,12 @@ tools/doc/node_modules: tools/doc/package.json
 	fi
 
 .PHONY: doc-only
-doc-only: tools/doc/node_modules \
+doc-only: \
 	$(apidoc_dirs) $(apiassets)  ## Builds the docs with the local or the global Node.js binary.
 	@if [ "$(shell $(node_use_openssl))" != "true" ]; then \
 		echo "Skipping doc-only (no crypto)"; \
 	else \
-		$(MAKE) out/doc/api/all.html out/doc/api/all.json out/doc/api/stability; \
+		$(MAKE) out/doc/api/all.html out/doc/api/all.json; \
 	fi
 
 .PHONY: doc
@@ -780,7 +775,9 @@ out/doc:
 # Just copy everything under doc/api over.
 out/doc/api: doc/api
 	mkdir -p $@
-	cp -r doc/api out/doc
+	cp -r doc/api out/doc/
+	rm -f out/doc/api/*.html
+	rm -f out/doc/api/*.json
 
 # If it's a source tarball, assets are already in doc/api/assets
 out/doc/api/assets:
@@ -796,50 +793,50 @@ run-npm-ci = $(PWD)/$(NPM) ci
 
 LINK_DATA = out/doc/apilinks.json
 VERSIONS_DATA = out/previous-doc-versions.json
-gen-api = tools/doc/generate.mjs --node-version=$(FULLVERSION) \
+gen-api = debian/doc-generator/generate.mjs --node-version=$(FULLVERSION) \
 		--apilinks=$(LINK_DATA) $< --output-directory=out/doc/api \
 		--versions-file=$(VERSIONS_DATA)
-gen-apilink = tools/doc/apilinks.mjs $(LINK_DATA) $(wildcard lib/*.js)
+gen-apilink = debian/doc-generator/apilinks.mjs $(LINK_DATA) $(wildcard lib/*.js)
 
-$(LINK_DATA): $(wildcard lib/*.js) tools/doc/apilinks.mjs | out/doc
+$(LINK_DATA): $(wildcard lib/*.js) debian/doc-generator/apilinks.mjs | out/doc
 	$(call available-node, $(gen-apilink))
 
 # Regenerate previous versions data if the current version changes
-$(VERSIONS_DATA): CHANGELOG.md src/node_version.h tools/doc/versions.mjs
-	$(call available-node, tools/doc/versions.mjs $@)
+$(VERSIONS_DATA): CHANGELOG.md src/node_version.h debian/doc-generator/versions.mjs
+	$(call available-node, debian/doc-generator/versions.mjs $@)
 
 node_use_icu = $(call available-node,"-p" "typeof Intl === 'object'")
 
-out/doc/api/%.json out/doc/api/%.html: doc/api/%.md tools/doc/generate.mjs \
-	tools/doc/markdown.mjs tools/doc/html.mjs tools/doc/json.mjs \
-	tools/doc/apilinks.mjs $(VERSIONS_DATA) | $(LINK_DATA) out/doc/api
+out/doc/api/%.json out/doc/api/%.html: doc/api/%.md debian/doc-generator/generate.mjs \
+	debian/doc-generator/markdown.mjs debian/doc-generator/html.mjs debian/doc-generator/json.mjs \
+	debian/doc-generator/apilinks.mjs $(VERSIONS_DATA) | $(LINK_DATA) out/doc/api
 	@if [ "$(shell $(node_use_icu))" != "true" ]; then \
 		echo "Skipping documentation generation (no ICU)"; \
 	else \
 		$(call available-node, $(gen-api)) \
 	fi
 
-out/doc/api/all.html: $(apidocs_html) tools/doc/allhtml.mjs \
-	tools/doc/apilinks.mjs | out/doc/api
+out/doc/api/all.html: $(apidocs_html) debian/doc-generator/allhtml.mjs \
+	debian/doc-generator/apilinks.mjs | out/doc/api
 	@if [ "$(shell $(node_use_icu))" != "true" ]; then \
 		echo "Skipping HTML single-page doc generation (no ICU)"; \
 	else \
-		$(call available-node, tools/doc/allhtml.mjs) \
+		$(call available-node, debian/doc-generator/allhtml.mjs) \
 	fi
 
-out/doc/api/all.json: $(apidocs_json) tools/doc/alljson.mjs | out/doc/api
+out/doc/api/all.json: $(apidocs_json) debian/doc-generator/alljson.mjs | out/doc/api
 	@if [ "$(shell $(node_use_icu))" != "true" ]; then \
 		echo "Skipping JSON single-file generation (no ICU)"; \
 	else \
-		$(call available-node, tools/doc/alljson.mjs) \
+		$(call available-node, debian/doc-generator/alljson.mjs) \
 	fi
 
 .PHONY: out/doc/api/stability
-out/doc/api/stability: out/doc/api/all.json tools/doc/stability.mjs | out/doc/api
+out/doc/api/stability: out/doc/api/all.json debian/doc-generator/stability.mjs | out/doc/api
 	@if [ "$(shell $(node_use_icu))" != "true" ]; then \
 		echo "Skipping stability indicator generation (no ICU)"; \
 	else \
-		$(call available-node, tools/doc/stability.mjs) \
+		$(call available-node, debian/doc-generator/stability.mjs) \
 	fi
 
 .PHONY: docopen
