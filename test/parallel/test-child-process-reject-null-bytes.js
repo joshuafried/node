@@ -87,7 +87,7 @@ throws(() => execFileSync(process.execPath, [__filename, 'AAA', 'BBB\0XXX', 'CCC
 
 throws(() => fork(__filename, ['AAA', 'BBB\0XXX', 'CCC']), {
   code: 'ERR_INVALID_ARG_VALUE',
-  message: /The argument 'args\[2\]' must be a string without null bytes/
+  message: /The argument 'args\[3\]' must be a string without null bytes/
 });
 
 throws(() => spawn(process.execPath, [__filename, 'AAA', 'BBB\0XXX', 'CCC']), {
