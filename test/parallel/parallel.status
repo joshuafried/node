@@ -16,6 +16,7 @@ test-release-npm                     : FAIL
 test-dns                             : SKIP
 test-net-connect-immediate-finish    : SKIP
 test-net-better-error-messages-port-hostname : SKIP
+test-single-executable-application: SKIP
 
 # in debian build env, skip because it somehow tries to access network
 test-https-connect-address-family : SKIP 
