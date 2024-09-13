@@ -18,7 +18,7 @@ tmpdir.refresh();
 const file = path.resolve(tmpdir.path, 'keylog.log');
 
 const child = fork(__filename, ['test'], {
-  execArgv: ['--tls-keylog=' + file]
+  execArgv: ['--tls-keylog=' + file, "--openssl-shared-config"]
 });
 
 child.on('close', common.mustCall((code, signal) => {

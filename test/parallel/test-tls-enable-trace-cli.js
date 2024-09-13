@@ -19,7 +19,7 @@ if (!binding('tls_wrap').HAVE_SSL_TRACE)
 
 const child = fork(__filename, ['test'], {
   silent: true,
-  execArgv: ['--trace-tls']
+  execArgv: ['--trace-tls', '--openssl-shared-config']
 });
 
 let stdout = '';
