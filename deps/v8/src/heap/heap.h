@@ -235,6 +235,9 @@ class Heap {
 
   enum class HeapGrowingMode { kSlow, kConservative, kMinimal, kDefault };
 
+  void Freeze();
+  void Unfreeze();
+
   enum HeapState {
     NOT_IN_GC,
     SCAVENGE,

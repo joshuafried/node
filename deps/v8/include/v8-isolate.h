@@ -618,6 +618,8 @@ class V8_EXPORT Isolate {
    * does not interrupt synchronous ECMAScript code execution.
    */
   void ClearKeptObjects();
+  void Freeze();
+  void Unfreeze();
 
   /**
    * Custom callback used by embedders to help V8 determine if it should abort

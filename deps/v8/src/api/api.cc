@@ -8383,6 +8383,16 @@ void Isolate::ClearKeptObjects() {
   isolate->ClearKeptObjects();
 }
 
+void Isolate::Freeze() {
+  i::Isolate* i_isolate = reinterpret_cast<i::Isolate*>(this);
+  i_isolate->Freeze();
+}
+
+void Isolate::Unfreeze() {
+  i::Isolate* i_isolate = reinterpret_cast<i::Isolate*>(this);
+  i_isolate->Unfreeze();
+}
+
 v8::Local<v8::Context> Isolate::GetCurrentContext() {
   i::Isolate* isolate = reinterpret_cast<i::Isolate*>(this);
   i::Context context = isolate->context();

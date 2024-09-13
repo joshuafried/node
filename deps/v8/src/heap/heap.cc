@@ -1515,6 +1515,14 @@ class V8_NODISCARD GCCallbacksScope {
   Heap* heap_;
 };
 
+void Heap::Freeze() {
+  memory_reducer()->Freeze();
+}
+
+void Heap::Unfreeze() {
+  memory_reducer()->Unfreeze();
+}
+
 void Heap::HandleGCRequest() {
   if (IsStressingScavenge() && stress_scavenge_observer_->HasRequestedGC()) {
     CollectAllGarbage(NEW_SPACE, GarbageCollectionReason::kTesting);

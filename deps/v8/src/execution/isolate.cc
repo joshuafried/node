@@ -4802,6 +4802,9 @@ MaybeHandle<FixedArray> Isolate::GetImportAssertionsFromArgument(
 
 void Isolate::ClearKeptObjects() { heap()->ClearKeptObjects(); }
 
+void Isolate::Freeze() { heap()->Freeze(); }
+void Isolate::Unfreeze() { heap()->Unfreeze(); }
+
 void Isolate::SetHostImportModuleDynamicallyCallback(
     HostImportModuleDynamicallyCallback callback) {
   DCHECK_NULL(host_import_module_dynamically_with_import_assertions_callback_);

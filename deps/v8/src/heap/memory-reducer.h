@@ -114,6 +114,9 @@ class V8_EXPORT_PRIVATE MemoryReducer {
     bool can_start_incremental_gc;
   };
 
+  void Freeze();
+  void Unfreeze();
+
   explicit MemoryReducer(Heap* heap);
   MemoryReducer(const MemoryReducer&) = delete;
   MemoryReducer& operator=(const MemoryReducer&) = delete;
@@ -157,6 +160,8 @@ class V8_EXPORT_PRIVATE MemoryReducer {
     MemoryReducer* memory_reducer_;
   };
 
+  friend class TimerTask;
+
   void NotifyTimer(const Event& event);
 
   static bool WatchdogGC(const State& state, const Event& event);
@@ -166,6 +171,9 @@ class V8_EXPORT_PRIVATE MemoryReducer {
   State state_;
   unsigned int js_calls_counter_;
   double js_calls_sample_time_ms_;
+  double next_timer_expire_ms_{0.0};
+  double frozen_remaining_ms_{0.0};
+  bool needs_timer_reschedule_{false};
 
   // Used in cctest.
   friend class heap::HeapTester;

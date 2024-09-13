@@ -1756,6 +1756,8 @@ class V8_EXPORT_PRIVATE Isolate final : private HiddenFactory {
   bool IsInAnyContext(Object object, uint32_t index);
 
   void ClearKeptObjects();
+  void Freeze();
+  void Unfreeze();
 
   void SetHostImportModuleDynamicallyCallback(
       HostImportModuleDynamicallyWithImportAssertionsCallback callback);

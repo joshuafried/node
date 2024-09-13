@@ -38,6 +38,19 @@ void MemoryReducer::TimerTask::RunInternal() {
   Heap* heap = memory_reducer_->heap();
   Event event;
   double time_ms = heap->MonotonicallyIncreasingTimeInMs();
+
+  // Timer is disabled.
+  if (memory_reducer_->next_timer_expire_ms_ < 0) {
+    memory_reducer_->needs_timer_reschedule_ = true;
+    return;
+  }
+
+  // Timer fired early.
+  if (time_ms < memory_reducer_->next_timer_expire_ms_) {
+      memory_reducer_->ScheduleTimer(memory_reducer_->next_timer_expire_ms_ - time_ms);
+      return;
+  }
+
   heap->tracer()->SampleAllocation(time_ms, heap->NewSpaceAllocationCounter(),
                                    heap->OldGenerationAllocationCounter(),
                                    heap->EmbedderAllocationCounter());
@@ -210,6 +223,26 @@ MemoryReducer::State MemoryReducer::Step(const State& state,
   UNREACHABLE();
 }
 
+void MemoryReducer::Freeze() {
+  auto curt = heap()->MonotonicallyIncreasingTimeInMs();
+  if (curt < next_timer_expire_ms_)
+    frozen_remaining_ms_ = next_timer_expire_ms_ - curt;
+  else
+    frozen_remaining_ms_ = 0;
+  next_timer_expire_ms_ = -1.0;
+}
+
+void MemoryReducer::Unfreeze() {
+  if (next_timer_expire_ms_ > -1.0) return;
+  auto curt = heap()->MonotonicallyIncreasingTimeInMs();
+  if (needs_timer_reschedule_) {
+    ScheduleTimer(frozen_remaining_ms_);
+    needs_timer_reschedule_ = false;
+  }
+  next_timer_expire_ms_ = curt + frozen_remaining_ms_;
+  frozen_remaining_ms_ = 0;
+}
+
 void MemoryReducer::ScheduleTimer(double delay_ms) {
   DCHECK_LT(0, delay_ms);
   if (heap()->IsTearingDown()) return;
@@ -217,6 +250,7 @@ void MemoryReducer::ScheduleTimer(double delay_ms) {
   const double kSlackMs = 100;
   taskrunner_->PostDelayedTask(std::make_unique<MemoryReducer::TimerTask>(this),
                                (delay_ms + kSlackMs) / 1000.0);
+  next_timer_expire_ms_ = heap()->MonotonicallyIncreasingTimeInMs() + delay_ms;
 }
 
 void MemoryReducer::TearDown() { state_ = State(kDone, 0, 0, 0.0, 0); }
