@@ -10,7 +10,7 @@ const bench = common.createBenchmark(main, {
 
 function main({ n, value }) {
   const aliceBuffer = fs.readFileSync(
-    path.resolve(__dirname, '../fixtures/alice.html'),
+    path.resolve(__dirname, '../../doc/api/all.html'),
   );
 
   let count = 0;

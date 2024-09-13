@@ -31,7 +31,7 @@ const bench = common.createBenchmark(main, {
 
 function main({ n, search, encoding, type }) {
   let aliceBuffer = fs.readFileSync(
-    path.resolve(__dirname, '../fixtures/alice.html'),
+    path.resolve(__dirname, '../../doc/api/all.html'),
   );
 
   if (encoding === 'undefined') {

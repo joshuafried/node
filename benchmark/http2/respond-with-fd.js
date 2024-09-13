@@ -4,7 +4,7 @@ const common = require('../common.js');
 const path = require('path');
 const fs = require('fs');
 
-const file = path.join(path.resolve(__dirname, '../fixtures'), 'alice.html');
+const file = path.join(path.resolve(__dirname, '../../doc/api'), 'all.html');
 
 const bench = common.createBenchmark(main, {
   requests: [100, 1000, 5000],
